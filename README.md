@@ -29,7 +29,7 @@ cast_vote.depends_on(:vote_repo, double('Vote'))
 
 ### using an initializer
 
-```
+```ruby
 cast_vote = CastVote.new(vote_repo: double('Vote'))
 
 cast_vote = CastVote.new(depends_on: { vote_repo: double('Vote') })
