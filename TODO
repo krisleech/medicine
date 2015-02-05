@@ -1,0 +1,9 @@
+# TODO
+
+test that zsuper/super is called
+module populates class with many private instance methods
+  * think about namespacing them somehow, module/double underscore...
+refactor tests
+implement remaining examples in README
+add example of how to call super if overriding initialize
+release 0.0.1
