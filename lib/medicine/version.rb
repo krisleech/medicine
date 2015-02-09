@@ -1,3 +1,3 @@
-module Isopod
+module Medicine
   VERSION = "0.0.1"
 end

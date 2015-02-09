@@ -1,6 +1,6 @@
-require "isopod/version"
+require "medicine/version"
 
-module Isopod
+module Medicine
   def self.di
     DI
   end

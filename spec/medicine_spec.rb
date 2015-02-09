@@ -1,7 +1,7 @@
-RSpec.describe 'Isopod' do
+RSpec.describe 'Medicine' do
   let(:klass) do
     Class.new do
-      include Isopod.di
+      include Medicine.di
     end
   end
 
@@ -14,7 +14,7 @@ RSpec.describe 'Isopod' do
         subject { klass.new }
 
         it 'initialization raises error' do
-          expect { subject }.to raise_error(Isopod::DI::ArgumentError)
+          expect { subject }.to raise_error(Medicine::DI::ArgumentError)
         end
       end
 
@@ -35,7 +35,7 @@ RSpec.describe 'Isopod' do
           subject { klass.new({}) }
 
           it 'raises error' do
-            expect { subject }.to raise_error(Isopod::DI::ArgumentError)
+            expect { subject }.to raise_error(Medicine::DI::ArgumentError)
           end
         end
       end
@@ -61,7 +61,7 @@ RSpec.describe 'Isopod' do
           subject { klass.new(double, double, {}) }
 
           skip 'raises error' do
-            expect { subject }.to raise_error(Isopod::DI::ArgumentError)
+            expect { subject }.to raise_error(Medicine::DI::ArgumentError)
           end
         end
       end

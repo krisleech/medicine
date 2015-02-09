@@ -1,13 +1,13 @@
-# Isopod
+# Medicine
 
 Simple Dependency Injection for Ruby
 
-Find yourself passing dependencies in to the initalizer? Isopod makes this
+Find yourself passing dependencies in to the initalizer? Medicine makes this
 declarative.
 
 ```ruby
 class CastVote
-  include Isopod.di
+  include Medicine.di
 
   dependency :votes_repo, default: -> { Vote }
 
@@ -21,7 +21,7 @@ cast_vote = CastVote.new
 cast_vote.call(3)
 ```
 
-In this example Isopod adds a private method called `vote_repo` which returns `Vote`.
+In this example Medicine adds a private method called `vote_repo` which returns `Vote`.
 
 ## Injecting a dependency
 
