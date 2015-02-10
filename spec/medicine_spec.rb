@@ -86,6 +86,22 @@ RSpec.describe 'Medicine' do
           end
         end
 
+        describe 'as a lambda' do
+          before { klass.class_eval { dependency :vote_repo, default: -> { Foo } } }
+
+          it 'returns declared default class' do
+            expect(subject.vote_repo).to eq Foo
+          end
+        end
+
+        describe 'as a Proc' do
+          before { klass.class_eval { dependency :vote_repo, default: Proc.new { Foo } } }
+
+          it 'returns declared default class' do
+            expect(subject.vote_repo).to eq Foo
+          end
+        end
+
         describe 'as a CamelCase String' do
           before { klass.class_eval { dependency :vote_repo, default: 'Foo' } }
 

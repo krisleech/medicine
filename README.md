@@ -28,10 +28,17 @@ In this example Medicine adds a private method called `vote_repo` which returns 
 ```ruby
 vote_repo = double('VoteRepo')
 cast_vote = CastVote.new(vote_repo: vote_repo)
+```
 
-# or
+If you want to arguments other than the dependencies in to the constructor
+don't forget to invoke `super`:
 
-cast_vote = CastVote.new(arg1, arg2, vote_repo: vote_repo)
+```ruby
+def initialize(arg1, arg2, dependencies = {})
+  @arg1 = arg1
+  @arg2 = arg2
+  super(dependencies)
+end
 ```
 
 ## Required dependencies
@@ -46,27 +53,11 @@ initialization.
 ## Default dependencies
 
 ```ruby
+dependency :vote_repo, default: :vote
 dependency :vote_repo, default: :Vote
 dependency :vote_repo, default: 'Vote'
 dependency :vote_repo, default: -> { Vote }
 ```
 
-The above examples will expose a method called `vote_repo` which returns the 
+The above examples will expose a method called `vote_repo` which returns the
 `Vote` class as the default dependency.
-
-You could also pass an object which responds to call and accepts one argument,
-the name of the dependency
-
-```ruby
-dependency :vote_repo, default: Repo
-```
-
-```ruby
-class Repo
-  def self.call(name)
-    Kernel.constant_get(name.gsub('_repo', ''))
-  end
-end
-```
-
-In this example the `vote_repo` method will return the `Vote` class.

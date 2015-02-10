@@ -55,6 +55,8 @@ module Medicine
         Inflecto.constantize(Inflecto.camelize(dependency))
       when 'Symbol' then
         typecast_dependency(dependency.to_s)
+      when 'Proc' then
+        dependency.call
       else
         dependency
       end
