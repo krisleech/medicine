@@ -52,7 +52,7 @@ end
 dependency :vote_repo
 ```
 
-When no default is specified and is not injected an error will be raised on
+When no default is specified and is not injected an exception will be raised on
 initialization.
 
 ## Default dependencies

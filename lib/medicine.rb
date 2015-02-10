@@ -6,9 +6,9 @@ module Medicine
     DI
   end
 
-  module DI
-    ArgumentError = Class.new(::ArgumentError)
+  RequiredDependencyError = Class.new(::ArgumentError)
 
+  module DI
     def self.included(base)
       base.extend(ClassMethods)
     end
@@ -37,7 +37,7 @@ module Medicine
     end
 
     def assert_all_dependencies_met
-      raise ArgumentError, "initalize with all dependencies without a default" unless all_dependencies_met?
+      raise RequiredDependencyError, "pass all required dependencies in to the initialize" unless all_dependencies_met?
     end
 
     def all_dependencies_met?

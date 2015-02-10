@@ -16,8 +16,8 @@ RSpec.describe 'Medicine' do
     context 'and subject initialized with no arguments' do
       subject { klass.new }
 
-      it 'raises error' do
-        expect { subject }.to raise_error(Medicine::DI::ArgumentError)
+      it 'raises exception' do
+        expect { subject }.to raise_error(Medicine::RequiredDependencyError)
       end
     end
 
@@ -41,8 +41,8 @@ RSpec.describe 'Medicine' do
       context 'and hash has no key for dependency' do
         subject { klass.new({}) }
 
-        it 'raises error' do
-          expect { subject }.to raise_error(Medicine::DI::ArgumentError)
+        it 'raises exception' do
+          expect { subject }.to raise_error(Medicine::RequiredDependencyError)
         end
       end
     end
