@@ -1,5 +1,10 @@
 # Medicine
 
+[![Gem Version](https://badge.fury.io/rb/medicine.png)](http://badge.fury.io/rb/medicine)
+[![Code Climate](https://codeclimate.com/github/krisleech/medicine.png)](https://codeclimate.com/github/krisleech/medicine)
+[![Build Status](https://travis-ci.org/krisleech/medicine.png?branch=master)](https://travis-ci.org/krisleech/medicine)
+[![Coverage Status](https://coveralls.io/repos/krisleech/medicine/badge.png?branch=master)](https://coveralls.io/r/krisleech/medicine?branch=master)
+
 Simple Dependency Injection for Ruby
 
 Find yourself passing dependencies in to the initalizer? Medicine makes this

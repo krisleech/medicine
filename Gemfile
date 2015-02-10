@@ -3,6 +3,11 @@ source 'https://rubygems.org'
 gemspec
 
 gem "bundler"
-gem "rake"
 gem "rspec"
-gem 'pry-byebug'
+gem 'coveralls', require: false
+
+group :extras do
+  gem "rake"
+  gem 'pry-byebug'
+  gem 'yard'
+end
