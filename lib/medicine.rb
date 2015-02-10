@@ -28,6 +28,7 @@ module Medicine
         define_singleton_method name do
           @dependencies.fetch(name) { resolve_dependency(name) }
         end
+        self.singleton_class.class_eval { private name }
       end
     end
 
