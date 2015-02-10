@@ -1,7 +1,11 @@
 require 'coveralls'
 Coveralls.wear!
 
-require 'pry'
+begin
+  require 'pry'
+rescue LoadError
+end
+
 require 'medicine'
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
