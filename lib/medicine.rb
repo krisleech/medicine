@@ -1,4 +1,5 @@
 require "medicine/version"
+require "inflecto"
 
 module Medicine
   def self.di
@@ -45,7 +46,18 @@ module Medicine
     end
 
     def resolve_dependency(name)
-      self.class.dependencies.fetch(name).fetch(:default)
+      typecast_dependency(self.class.dependencies.fetch(name).fetch(:default))
+    end
+
+    def typecast_dependency(dependency)
+      case dependency.class.name
+      when 'String' then
+        Inflecto.constantize(Inflecto.camelize(dependency))
+      when 'Symbol' then
+        typecast_dependency(dependency.to_s)
+      else
+        dependency
+      end
     end
 
     module ClassMethods

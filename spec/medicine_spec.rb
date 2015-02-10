@@ -67,24 +67,58 @@ RSpec.describe 'Medicine' do
       end
     end
 
-    describe 'with default option' do
-      describe 'of type String' do
-        before { klass.class_eval { dependency :vote_repo, default: 'Object' } }
+    context 'initialized with no arguments' do
 
-        context 'and initializer given no arguments' do
+      subject { klass.new }
 
-          subject { klass.new }
+      before do
+        Foo  = Class.new unless defined?(Foo)
+        Foos = Class.new unless defined?(Foos)
+      end
 
-          it 'responds to dependency name' do
-            expect(subject).to respond_to(:vote_repo)
-          end
+      describe 'dependency declared with default option' do
 
-          it 'returns given default typecast to a class' do
-            expect(subject.vote_repo).to be_an_instance_of(Object)
+        describe 'as a class' do
+          before { klass.class_eval { dependency :vote_repo, default: Foo } }
+
+          it 'returns declared default class' do
+            expect(subject.vote_repo).to eq Foo
           end
         end
-      end
-    end # with default option
+
+        describe 'as a CamelCase String' do
+          before { klass.class_eval { dependency :vote_repo, default: 'Foo' } }
+
+          it 'returns declared default typecast to a class' do
+            expect(subject.vote_repo).to eq Foo
+          end
+        end
+
+        describe 'as a plural CamelCase String' do
+          before { klass.class_eval { dependency :vote_repo, default: 'Foos' } }
+
+          it 'returns declared default typecast to a class' do
+            expect(subject.vote_repo).to eq Foos
+          end
+        end
+
+        describe 'as a CamelCase Symbol' do
+          before { klass.class_eval { dependency :vote_repo, default: :Foo} }
+
+          it 'returns declared default typecast to a class' do
+            expect(subject.vote_repo).to eq Foo
+          end
+        end
+
+        describe 'as a lowercase Symbol' do
+          before { klass.class_eval { dependency :vote_repo, default: :foo} }
+
+          it 'returns declared default typecast to a class' do
+            expect(subject.vote_repo).to eq Foo
+          end
+        end
+      end # with default option
+    end # initialized with no arguments
 
   end # .dependency
 end # rspec
