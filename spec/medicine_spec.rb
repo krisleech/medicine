@@ -134,4 +134,32 @@ RSpec.describe 'Medicine' do
       end
     end # with default option
   end # initialized with no arguments
+
+  describe 'inclusion of module' do
+    it 'can be included' do
+      klass = Class.new { include Medicine.di }
+      expect(klass).to respond_to(:dependency)
+    end
+
+    it 'can be prepended' do
+      klass = Class.new { prepend Medicine.di }
+      expect(klass).to respond_to(:dependency)
+    end
+  end
+
+  describe 'object initialization' do
+    it 'zsuper is called' do
+      klass = Class.new do
+        prepend Medicine.di
+
+        attr_reader :initalize_reached
+
+        def initialize(*args)
+          @initalize_reached = true
+        end
+      end
+
+      expect(klass.new.initalize_reached).to be_truthy
+    end
+  end
 end # rspec

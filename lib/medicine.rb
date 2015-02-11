@@ -13,6 +13,10 @@ module Medicine
       base.extend(ClassMethods)
     end
 
+    def self.prepended(base)
+      base.extend(ClassMethods)
+    end
+
     def initialize(*args)
       @dependencies = extract_dependencies(args)
       assert_all_dependencies_met
