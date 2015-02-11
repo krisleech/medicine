@@ -37,12 +37,12 @@ module Medicine
     end
 
     def assert_all_dependencies_met
-      raise RequiredDependencyError, "pass all required dependencies in to the initialize" unless all_dependencies_met?
+      raise RequiredDependencyError, "pass all required dependencies (#{unmet_dependencies.join(', ')}) in to initialize" unless unmet_dependencies.empty?
     end
 
-    def all_dependencies_met?
-      self.class.dependencies.keys.all? do |key|
-        @dependencies.has_key?(key) || self.class.dependencies.fetch(key).has_key?(:default)
+    def unmet_dependencies
+      self.class.dependencies.keys.select do |key|
+        !@dependencies.has_key?(key) && !self.class.dependencies.fetch(key).has_key?(:default)
       end
     end
 
