@@ -1,5 +1,7 @@
 RSpec.describe 'Medicine' do
-  let(:klass) do
+  let(:medicated_class) { new_medicated_class }
+
+  def new_medicated_class
     Class.new do
       include Medicine.di
 
@@ -10,20 +12,27 @@ RSpec.describe 'Medicine' do
     end
   end
 
-  describe 'dependency declrations' do
+  describe 'dependency declarations' do
     it 'survive inheritence' do
-      klass.class_eval { dependency :foobar }
+      medicated_class.class_eval { dependency :foobar }
 
-      super_klass = Class.new(klass)
-      expect(super_klass.dependencies).not_to be_empty
+      super_medicated_class = Class.new(medicated_class)
+      expect(super_medicated_class.dependencies).not_to be_empty
+    end
+
+    it 'do not leak between unrelated classes' do
+      medicated_class.class_eval { dependency :foobar }
+
+      expect(medicated_class.dependencies).not_to be_empty
+      expect(new_medicated_class.dependencies).to be_empty
     end
   end
 
   describe 'dependency declared without any options' do
-    before { klass.class_eval { dependency :vote_repo } }
+    before { medicated_class.class_eval { dependency :vote_repo } }
 
     context 'and subject initialized with no arguments' do
-      subject { klass.new }
+      subject { medicated_class.new }
 
       it 'raises exception' do
         expect { subject }.to raise_error(Medicine::RequiredDependencyError)
@@ -31,7 +40,7 @@ RSpec.describe 'Medicine' do
     end
 
     context 'and subject initalized with hash' do
-      subject { klass.new(vote_repo: :foo) }
+      subject { medicated_class.new(vote_repo: :foo) }
 
       context 'and hash has key for dependency' do
         it 'provides a private method' do
@@ -48,7 +57,7 @@ RSpec.describe 'Medicine' do
       end
 
       context 'and hash has no key for dependency' do
-        subject { klass.new({}) }
+        subject { medicated_class.new({}) }
 
         it 'raises exception' do
           expect { subject }.to raise_error(Medicine::RequiredDependencyError)
@@ -59,7 +68,7 @@ RSpec.describe 'Medicine' do
 
   context 'and subject initialized with no arguments' do
 
-    subject { klass.new }
+    subject { medicated_class.new }
 
     before do
       Foo  = Class.new unless defined?(Foo)
@@ -69,7 +78,7 @@ RSpec.describe 'Medicine' do
     describe 'and dependency declared with default option' do
 
       describe 'as a class' do
-        before { klass.class_eval { dependency :vote_repo, default: Foo } }
+        before { medicated_class.class_eval { dependency :vote_repo, default: Foo } }
 
         it 'returns a class' do
           expect(subject._vote_repo).to eq Foo
@@ -77,7 +86,7 @@ RSpec.describe 'Medicine' do
       end
 
       describe 'as a lambda' do
-        before { klass.class_eval { dependency :vote_repo, default: -> { Foo } } }
+        before { medicated_class.class_eval { dependency :vote_repo, default: -> { Foo } } }
 
         it 'returns a class' do
           expect(subject._vote_repo).to eq Foo
@@ -85,7 +94,7 @@ RSpec.describe 'Medicine' do
       end
 
       describe 'as a Proc' do
-        before { klass.class_eval { dependency :vote_repo, default: Proc.new { Foo } } }
+        before { medicated_class.class_eval { dependency :vote_repo, default: Proc.new { Foo } } }
 
         it 'returns a class' do
           expect(subject._vote_repo).to eq Foo
@@ -93,7 +102,7 @@ RSpec.describe 'Medicine' do
       end
 
       describe 'as a CamelCase String' do
-        before { klass.class_eval { dependency :vote_repo, default: 'Foo' } }
+        before { medicated_class.class_eval { dependency :vote_repo, default: 'Foo' } }
 
         it 'returns a class' do
           expect(subject._vote_repo).to eq Foo
@@ -101,7 +110,7 @@ RSpec.describe 'Medicine' do
       end
 
       describe 'as a plural CamelCase String' do
-        before { klass.class_eval { dependency :vote_repo, default: 'Foos' } }
+        before { medicated_class.class_eval { dependency :vote_repo, default: 'Foos' } }
 
         it 'returns a class' do
           expect(subject._vote_repo).to eq Foos
@@ -109,7 +118,7 @@ RSpec.describe 'Medicine' do
       end
 
       describe 'as a CamelCase Symbol' do
-        before { klass.class_eval { dependency :vote_repo, default: :Foo} }
+        before { medicated_class.class_eval { dependency :vote_repo, default: :Foo} }
 
         it 'returns a class' do
           expect(subject._vote_repo).to eq Foo
@@ -117,7 +126,7 @@ RSpec.describe 'Medicine' do
       end
 
       describe 'as a lowercase Symbol' do
-        before { klass.class_eval { dependency :vote_repo, default: :foo} }
+        before { medicated_class.class_eval { dependency :vote_repo, default: :foo} }
 
         it 'returns a class' do
           expect(subject._vote_repo).to eq Foo
