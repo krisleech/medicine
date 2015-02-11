@@ -138,12 +138,12 @@ RSpec.describe 'Medicine' do
   describe 'inclusion of module' do
     it 'can be included' do
       klass = Class.new { include Medicine.di }
-      expect(klass).to respond_to(:dependency)
+      expect(klass).to respond_to(:dependencies)
     end
 
     it 'can be prepended' do
       klass = Class.new { prepend Medicine.di }
-      expect(klass).to respond_to(:dependency)
+      expect(klass).to respond_to(:dependencies)
     end
   end
 

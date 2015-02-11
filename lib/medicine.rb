@@ -22,7 +22,7 @@ module Medicine
       assert_all_dependencies_met
       define_dependency_methods
 
-      super(*args)
+      super
     end
 
     private
@@ -68,12 +68,14 @@ module Medicine
     end
 
     module ClassMethods
-      def dependency(name, options = {})
-        dependencies[name] = options
-      end
-
       def dependencies
         @dependencies ||= {}
+      end
+
+      private
+
+      def dependency(name, options = {})
+        dependencies[name] = options
       end
 
       def inherited(subclass)
