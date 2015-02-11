@@ -71,6 +71,11 @@ module Medicine
       def dependencies
         @dependencies ||= {}
       end
+
+      def inherited(subclass)
+        subclass.instance_variable_set("@dependencies", @dependencies)
+        super
+      end
     end
   end
 end

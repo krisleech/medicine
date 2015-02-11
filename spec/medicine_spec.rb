@@ -10,6 +10,15 @@ RSpec.describe 'Medicine' do
     end
   end
 
+  describe 'dependency declrations' do
+    it 'survive inheritence' do
+      klass.class_eval { dependency :foobar }
+
+      super_klass = Class.new(klass)
+      expect(super_klass.dependencies).not_to be_empty
+    end
+  end
+
   describe 'dependency declared without any options' do
     before { klass.class_eval { dependency :vote_repo } }
 
