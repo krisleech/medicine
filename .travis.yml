@@ -3,5 +3,5 @@ bundler_args: --without=extras
 script: rspec spec
 rvm:
   - '2.1.5'
-  - jruby
+  - jruby-21mode
   - rbx-2
