@@ -3,5 +3,8 @@ bundler_args: --without=extras
 script: rspec spec
 rvm:
   - '2.1.5'
-  - jruby-21mode
   - rbx-2
+matrix:
+  include:
+    - rvm: jruby
+      env: JRUBY_OPTS="--2.1"
