@@ -1,5 +1,6 @@
 require "medicine/version"
 require "medicine/dependencies"
+require "medicine/injections"
 require "inflecto"
 
 module Medicine
@@ -23,7 +24,7 @@ module Medicine
     # @example
     #   new(user_repo: User, role_repo: Role)
     def initialize(*args)
-      extract_injections(args)
+      @injections = Injections.new(last_hash(args))
       assert_all_dependencies_met
       define_dependency_methods
       super
@@ -31,8 +32,8 @@ module Medicine
 
     private
 
-    def extract_injections(args)
-      @injections = args.last.respond_to?(:[]) ? args.pop : {}
+    def last_hash(args)
+      args.last.respond_to?(:[]) ? args.pop : {}
     end
 
     def assert_all_dependencies_met
@@ -50,7 +51,7 @@ module Medicine
 
     def unmet_dependencies
       dependencies.without_default.select do |dependency|
-        !@injections.has_key?(dependency.name)
+        !@injections.include?(dependency.name)
       end
     end
 
