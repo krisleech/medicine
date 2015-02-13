@@ -147,6 +147,15 @@ RSpec.describe 'Medicine' do
     end
   end
 
+  it 'does not resolve default when injected' do
+    medicated_class.class_eval do
+      dependency :foo, default: -> { DoesNotExist }
+    end
+
+    object = medicated_class.new(foo: 'bar')
+    expect { object.send(:foo) }.not_to raise_error
+  end
+
   describe 'object initialization' do
     it 'zsuper is called' do
       klass = Class.new do
