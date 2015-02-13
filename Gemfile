@@ -8,6 +8,7 @@ gem 'coveralls', require: false
 
 group :extras do
   gem "rake"
+  gem 'guard-rspec'
   gem 'pry-byebug'
   gem 'yard'
 end
