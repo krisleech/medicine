@@ -1,8 +1,6 @@
 require "medicine/version"
 require "medicine/dependencies"
-require "medicine/injections"
 require "medicine/define_methods"
-require "inflecto"
 
 module Medicine
   def self.di
@@ -12,13 +10,6 @@ module Medicine
   RequiredDependencyError = Class.new(::ArgumentError)
 
   module DI
-    def self.included(base)
-      base.extend(ClassMethods)
-    end
-
-    def self.prepended(base)
-      base.extend(ClassMethods)
-    end
 
     # pass injections as a hash
     #
@@ -30,6 +21,14 @@ module Medicine
     end
 
     private
+
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
+
+    def self.prepended(base)
+      base.extend(ClassMethods)
+    end
 
     module ClassMethods
       def dependencies
@@ -53,5 +52,7 @@ module Medicine
         super
       end
     end
+
+    private_constant :ClassMethods
   end
 end

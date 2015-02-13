@@ -1,9 +1,3 @@
 # TODO
 
-test that zsuper/super is called
-module populates class with many private instance methods
-  * think about namespacing them somehow, module/double underscore...
 refactor tests
-test to make sure state is not shared between objects
-freeze dependency hash passed to initalize
-release 0.0.2

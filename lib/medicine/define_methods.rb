@@ -1,3 +1,5 @@
+require "medicine/injections"
+
 module Medicine
   class DefineMethods
     def self.on(object, injections)

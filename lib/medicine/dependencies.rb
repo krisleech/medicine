@@ -1,3 +1,5 @@
+require "inflecto"
+
 # @api private
 
 module Medicine
