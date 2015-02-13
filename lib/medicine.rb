@@ -1,4 +1,5 @@
 require "medicine/version"
+require "medicine/dependencies"
 require "inflecto"
 
 module Medicine
@@ -28,11 +29,11 @@ module Medicine
     private
 
     def define_dependency_methods
-      self.class.dependencies.each do |name, options|
-        define_singleton_method name do
-          @dependencies.fetch(name) { resolve_dependency(name) }
+      self.class.dependencies.each do |dependency|
+        define_singleton_method dependency.method_name do
+          @dependencies.fetch(dependency.name) { dependency.default }
         end
-        self.singleton_class.class_eval { private name }
+        self.singleton_class.class_eval { private dependency.method_name }
       end
     end
 
@@ -45,37 +46,26 @@ module Medicine
     end
 
     def unmet_dependencies
-      self.class.dependencies.keys.select do |key|
-        !@dependencies.has_key?(key) && !self.class.dependencies.fetch(key).has_key?(:default)
-      end
-    end
-
-    def resolve_dependency(name)
-      typecast_dependency(self.class.dependencies.fetch(name).fetch(:default))
-    end
-
-    def typecast_dependency(dependency)
-      case dependency.class.name
-      when 'String' then
-        Inflecto.constantize(Inflecto.camelize(dependency))
-      when 'Symbol' then
-        typecast_dependency(dependency.to_s)
-      when 'Proc' then
-        dependency.call
-      else
-        dependency
+      self.class.dependencies.without_default.select do |dependency|
+        !@dependencies.has_key?(dependency.name)
       end
     end
 
     module ClassMethods
       def dependencies
-        @dependencies ||= {}
+        @dependencies ||= Dependencies.new
       end
 
       private
 
+      # macro to declare a dependency
+      #
+      # @example
+      #   class MyThing
+      #     depdendency :user_repo, default: -> { User }
+      #   end
       def dependency(name, options = {})
-        dependencies[name] = options
+        dependencies.add(name, options)
       end
 
       def inherited(subclass)
