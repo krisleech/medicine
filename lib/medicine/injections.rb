@@ -1,7 +1,8 @@
 module Medicine
   class Injections
     def initialize(injections)
-      @injections = injections
+      @injections = injections.freeze
+      freeze
     end
 
     def fetch(name, &block)
