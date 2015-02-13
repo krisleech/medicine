@@ -18,37 +18,44 @@ module Medicine
       base.extend(ClassMethods)
     end
 
+    # pass injections as a hash
+    #
+    # @example
+    #   new(user_repo: User, role_repo: Role)
     def initialize(*args)
-      @dependencies = extract_dependencies(args)
+      extract_injections(args)
       assert_all_dependencies_met
       define_dependency_methods
-
       super
     end
 
     private
 
-    def define_dependency_methods
-      self.class.dependencies.each do |dependency|
-        define_singleton_method dependency.method_name do
-          @dependencies.fetch(dependency.name) { dependency.default }
-        end
-        self.singleton_class.class_eval { private dependency.method_name }
-      end
-    end
-
-    def extract_dependencies(args)
-      args.last.respond_to?(:[]) ? args.pop : {}
+    def extract_injections(args)
+      @injections = args.last.respond_to?(:[]) ? args.pop : {}
     end
 
     def assert_all_dependencies_met
       raise RequiredDependencyError, "pass all required dependencies (#{unmet_dependencies.join(', ')}) in to initialize" unless unmet_dependencies.empty?
     end
 
-    def unmet_dependencies
-      self.class.dependencies.without_default.select do |dependency|
-        !@dependencies.has_key?(dependency.name)
+    def define_dependency_methods
+      dependencies.each do |dependency|
+        define_singleton_method dependency.method_name do
+          @injections.fetch(dependency.name) { dependency.default }
+        end
+        self.singleton_class.class_eval { private dependency.method_name }
       end
+    end
+
+    def unmet_dependencies
+      dependencies.without_default.select do |dependency|
+        !@injections.has_key?(dependency.name)
+      end
+    end
+
+    def dependencies
+      self.class.dependencies
     end
 
     module ClassMethods
