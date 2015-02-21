@@ -1,8 +1,9 @@
 require "inflecto"
 
-# @api private
-
 module Medicine
+
+  # @api private
+
   class Dependencies
     include Enumerable
 

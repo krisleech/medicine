@@ -3,6 +3,14 @@ require "medicine/dependencies"
 require "medicine/define_methods"
 
 module Medicine
+  # returns the {Medicine::DI} module
+  #
+  # @example
+  #   class MyCommand
+  #     include Medicine.di
+  #   end
+  #
+  # @api public
   def self.di
     DI
   end
@@ -11,10 +19,6 @@ module Medicine
 
   module DI
 
-    # pass injections as a hash
-    #
-    # @example
-    #   new(user_repo: User, role_repo: Role)
     def initialize(*args)
       DefineMethods.on(self, args)
       super
@@ -37,12 +41,14 @@ module Medicine
 
       private
 
-      # macro to declare a dependency
+      # declare a dependency
       #
       # @example
       #   class MyThing
       #     depdendency :user_repo, default: -> { User }
       #   end
+      #
+      # @api public
       def dependency(name, options = {})
         dependencies.add(name, options)
       end

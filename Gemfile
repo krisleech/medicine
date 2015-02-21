@@ -11,4 +11,5 @@ group :extras do
   gem 'guard-rspec'
   gem 'pry-byebug'
   gem 'yard'
+  gem 'redcarpet' # yard
 end

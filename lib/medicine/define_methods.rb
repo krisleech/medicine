@@ -1,6 +1,9 @@
 require "medicine/injections"
 
 module Medicine
+
+  # @api private
+
   class DefineMethods
     def self.on(object, injections)
       new(object, injections).call
@@ -12,6 +15,7 @@ module Medicine
       @injections   = Injections.new(last_hash(args))
     end
 
+    # define method for each dependency
     def call
       assert_all_dependencies_met
       set_injections_var

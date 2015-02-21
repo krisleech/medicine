@@ -1,4 +1,7 @@
 module Medicine
+
+  # @api private
+  
   class Injections
     def initialize(injections)
       @injections = injections.freeze

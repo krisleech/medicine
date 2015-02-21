@@ -10,32 +10,68 @@ Simple Dependency Injection for Ruby
 Find yourself passing dependencies in to the initalizer? Medicine makes this
 declarative.
 
+## Usage
+
+Include the Medicine module and declare the dependencies with `dependency`.
+
 ```ruby
 class CastVote
   include Medicine.di
 
   dependency :votes_repo, default: -> { Vote }
 
-  def call(entry_id)
-    vote_repo.create!(entry_id: entry_id)
+  def call(candidate_id)
+    votes_repo.create(candidate_id: candidate_id)
+    # ...
   end
 end
-
-
-cast_vote = CastVote.new
-cast_vote.call(3)
 ```
 
-In this example Medicine adds a private method called `vote_repo` which returns `Vote`.
+The above adds an initializer to `CastVote` which accepts an optional hash of
+dependencies.
 
-## Injecting a dependency
+For each dependency declared it adds a private method which returns the value
+injected via the initializer, otherwise the default value.
 
 ```ruby
-vote_repo = double('VoteRepo')
-cast_vote = CastVote.new(vote_repo: vote_repo)
+command = CastVote.new
 ```
 
-If you want to arguments other than the dependencies in to the constructor
+In the above case `votes_repo` will return `Vote`.
+
+```ruby
+votes_repo = double('Vote')
+
+command = CastVote.new(votes_repo: vote_repo)
+```
+
+In the above case `votes_repo` will return a double.
+
+### Required dependencies
+
+```ruby
+dependency :vote_repo
+```
+
+When no default is specified the dependency must be injected via the
+constructor otherwise an exception is raised.
+
+### Default dependencies
+
+```ruby
+dependency :vote_repo, default: Vote
+dependency :vote_repo, default: :vote
+dependency :vote_repo, default: :Vote
+dependency :vote_repo, default: 'Vote'
+dependency :vote_repo, default: -> { Vote }
+```
+
+All the above examples will expose a method called `vote_repo` which returns the
+`Vote` class as the default dependency.
+
+### Already got an initializer?
+
+If you want to pass arguments other than the dependencies in to the constructor
 don't forget to invoke `super`:
 
 ```ruby
@@ -46,23 +82,14 @@ def initialize(arg1, arg2, dependencies = {})
 end
 ```
 
-## Required dependencies
+## Compatibility
 
-```ruby
-dependency :vote_repo
+Tested with MRI 2.1+ and Rubinius.
+
+See the [build status](https://travis-ci.org/krisleech/medicine) for details.
+
+## Running Specs
+
 ```
-
-When no default is specified and is not injected an exception will be raised on
-initialization.
-
-## Default dependencies
-
-```ruby
-dependency :vote_repo, default: :vote
-dependency :vote_repo, default: :Vote
-dependency :vote_repo, default: 'Vote'
-dependency :vote_repo, default: -> { Vote }
+rspec spec
 ```
-
-The above examples will expose a method called `vote_repo` which returns the
-`Vote` class as the default dependency.
