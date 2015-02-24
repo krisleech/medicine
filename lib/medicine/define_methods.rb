@@ -5,19 +5,17 @@ module Medicine
   # @api private
 
   class DefineMethods
-    def self.on(object, injections)
-      new(object, injections).call
+    def self.on(object)
+      new(object).call
     end
 
-    def initialize(object, args)
+    def initialize(object)
       @object       = object
       @dependencies = object.class.dependencies
-      @initializer_injections = (last_hash(args))
     end
 
     # define method for each dependency
     def call
-      set_injections
       dependencies.each { |dependency| build_method(dependency) }
     end
 
@@ -32,18 +30,8 @@ module Medicine
       object.singleton_class.class_eval { private dependency.method_name }
     end
 
-    def set_injections
-      @initializer_injections.each do |name, dependency|
-        injections.set(name, dependency)
-      end
-    end
-
     def injections
       object.instance_variable_get("@injections")
-    end
-
-    def last_hash(args)
-      args.last.respond_to?(:[]) ? args.pop : {}
     end
   end
 end

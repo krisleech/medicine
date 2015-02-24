@@ -21,7 +21,8 @@ module Medicine
 
     def initialize(*args)
       @injections = Injections.new
-      DefineMethods.on(self, args)
+      set_injections_for_args(args)
+      DefineMethods.on(self)
       super
     end
 
@@ -34,6 +35,12 @@ module Medicine
     end
 
     private
+
+    def set_injections_for_args(args)
+      (args.last.respond_to?(:[]) ? args.pop : {}).each do |name, dependency|
+        injections.set(name, dependency)
+      end
+    end
 
     def self.included(base)
       base.extend(ClassMethods)
