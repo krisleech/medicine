@@ -12,13 +12,12 @@ module Medicine
     def initialize(object, args)
       @object       = object
       @dependencies = object.class.dependencies
-      @injections   = Injections.new(last_hash(args))
+      @initializer_injections = (last_hash(args))
     end
 
     # define method for each dependency
     def call
-      assert_all_dependencies_met
-      set_injections_var
+      set_injections
       dependencies.each { |dependency| build_method(dependency) }
     end
 
@@ -28,24 +27,19 @@ module Medicine
 
     def build_method(dependency)
       object.define_singleton_method dependency.method_name do
-        @injections.fetch(dependency.name) { dependency.default }
+        @injections.get(dependency.name) { dependency.default }
       end
       object.singleton_class.class_eval { private dependency.method_name }
     end
 
-    # set ivar which is later accessed by the defined methods
-    def set_injections_var
-      object.instance_variable_set("@injections", injections)
-    end
-
-    def assert_all_dependencies_met
-      raise RequiredDependencyError, "pass all required dependencies (#{unmet_dependencies.join(', ')}) in to initialize" unless unmet_dependencies.empty?
-    end
-
-    def unmet_dependencies
-      dependencies.without_default.reject do |dependency|
-        injections.include?(dependency.name)
+    def set_injections
+      @initializer_injections.each do |name, dependency|
+        injections.set(name, dependency)
       end
+    end
+
+    def injections
+      object.instance_variable_get("@injections")
     end
 
     def last_hash(args)

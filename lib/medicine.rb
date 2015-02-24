@@ -20,8 +20,17 @@ module Medicine
   module DI
 
     def initialize(*args)
+      @injections = Injections.new
       DefineMethods.on(self, args)
       super
+    end
+
+    def injections
+      @injections.dup.freeze
+    end
+
+    def inject(key, dependency)
+      @injections.set(key, dependency)
     end
 
     private

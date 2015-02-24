@@ -31,14 +31,6 @@ RSpec.describe 'Medicine' do
   describe 'dependency declared without any options' do
     before { medicated_class.class_eval { dependency :vote_repo } }
 
-    context 'and subject initialized with no arguments' do
-      subject { medicated_class.new }
-
-      it 'raises exception' do
-        expect { subject }.to raise_error(Medicine::RequiredDependencyError)
-      end
-    end
-
     context 'and subject initalized with hash' do
       subject { medicated_class.new(vote_repo: :foo) }
 
@@ -53,14 +45,6 @@ RSpec.describe 'Medicine' do
 
         it 'provides method which returns injected value' do
           expect(subject._vote_repo).to eq :foo
-        end
-      end
-
-      context 'and hash has no key for dependency' do
-        subject { medicated_class.new({}) }
-
-        it 'raises exception' do
-          expect { subject }.to raise_error(Medicine::RequiredDependencyError)
         end
       end
     end

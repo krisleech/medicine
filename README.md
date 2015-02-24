@@ -7,8 +7,9 @@
 
 Simple Dependency Injection for Ruby
 
-Find yourself passing dependencies in to the initalizer? Medicine makes this
-declarative.
+Find yourself injecting dependencies via the initalizer or a setter method?
+
+Medicine makes this declarative.
 
 ## Usage
 
@@ -20,32 +21,46 @@ class CastVote
 
   dependency :votes_repo, default: -> { Vote }
 
-  def call(candidate_id)
-    votes_repo.create(candidate_id: candidate_id)
-    # ...
+  def call
+    votes_repo # => Vote
   end
 end
 ```
 
-The above adds an initializer to `CastVote` which accepts an optional hash of
-dependencies.
+For each dependency declared a private method is defined which returns the
+dependency.
 
-For each dependency declared it adds a private method which returns the value
-injected via the initializer, otherwise the default value.
+### Without injection
 
 ```ruby
 command = CastVote.new
 ```
 
-In the above case `votes_repo` will return `Vote`.
+In the above case the `votes_repo` method will return `Vote`.
+
+If no dependency is injected the default will be used.
+
+Specifying a default is optional and if a dependency is not injected and
+there is no default an error will be raised if the dependencies method is
+invoked.
+
+### Injecting via initializer
+
 
 ```ruby
-votes_repo = double('Vote')
-
-command = CastVote.new(votes_repo: vote_repo)
+command = CastVote.new(votes_repo: double)
 ```
 
-In the above case `votes_repo` will return a double.
+In the above case `votes_repo` will return the double.
+
+### Inejcting via a setter
+
+```ruby
+command = CastVote.new
+command.inject(:vote_repo, double)
+```
+
+In the above case `votes_repo` will return the double.
 
 ### Required dependencies
 
@@ -54,7 +69,7 @@ dependency :vote_repo
 ```
 
 When no default is specified the dependency must be injected via the
-constructor otherwise an exception is raised.
+constructor or setter an otherwise an exception will be raised.
 
 ### Default dependencies
 
