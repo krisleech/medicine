@@ -19,8 +19,8 @@ RSpec.describe Medicine::Dependency do
     context 'without default option' do
       let(:dependency) { subject.new('foo') }
 
-      it 'sets default to nil-like object' do
-        expect(dependency.default).to be_nil
+      it 'raises an error' do
+        expect { dependency.default }.to raise_error(Medicine::NoDefaultError)
       end
     end
   end

@@ -1,4 +1,5 @@
 require "inflecto"
+require "medicine/dependency"
 
 module Medicine
 
@@ -41,49 +42,6 @@ module Medicine
 
     def without_default
       reject(&:default?)
-    end
-  end
-
-  class Dependency
-    class NoDefault
-      def nil?; true; end
-      def present?; false; end
-      def to_s; 'no default'; end
-    end
-
-    attr_reader :name
-
-    def initialize(name, options = {})
-      @name    = name
-      @default = options.fetch(:default, NoDefault.new)
-    end
-
-    # FIXME: remove and assert name can be a method name
-    def method_name
-      name
-    end
-
-    def default
-      typecast(@default)
-    end
-
-    def default?
-      !@default.nil?
-    end
-
-    private
-
-    def typecast(dependency)
-      case dependency.class.name
-      when 'String' then
-        Inflecto.constantize(Inflecto.camelize(dependency))
-      when 'Symbol' then
-        typecast(dependency.to_s)
-      when 'Proc' then
-        dependency.call
-      else
-        dependency
-      end
     end
   end
 end

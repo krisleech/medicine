@@ -2,6 +2,19 @@ require "medicine/injections"
 
 module Medicine
 
+  # Exception raised when dependency not injected via initializer or inject
+  # method and no default declared.
+  #
+  class NoInjectionError < StandardError
+    def initialize(dependency)
+      @dependency = dependency
+    end
+
+    def to_s
+      "Dependency not injected and default not declared for #{@dependency.name}"
+    end
+  end
+
   # @api private
 
   class DefineMethods
@@ -25,7 +38,11 @@ module Medicine
 
     def build_method(dependency)
       object.define_singleton_method dependency.method_name do
-        @injections.get(dependency.name) { dependency.default }
+        begin
+          @injections.get(dependency.name) { dependency.default }
+        rescue NoDefaultError
+          raise NoInjectionError.new(dependency)
+        end
       end
       object.singleton_class.class_eval { private dependency.method_name }
     end

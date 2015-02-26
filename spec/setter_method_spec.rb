@@ -29,6 +29,10 @@ RSpec.describe 'Medicine' do
   end
 
   describe '#inject' do
+    it 'is a public method' do
+      expect(subject).to respond_to :inject
+    end
+
     it 'injects a dependency' do
       subject.inject(:name, double)
       expect(subject.injections).not_to be_empty

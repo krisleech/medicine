@@ -47,6 +47,14 @@ RSpec.describe 'Medicine' do
           expect(subject._vote_repo).to eq :foo
         end
       end
+
+      context 'and hash has no key for dependency' do
+        subject { medicated_class.new }
+
+        it 'raises an error' do
+          expect { subject._vote_repo }.to raise_error(Medicine::NoInjectionError, /Dependency not injected and default not declared/)
+        end
+      end
     end
   end
 
