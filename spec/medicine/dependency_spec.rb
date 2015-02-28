@@ -25,6 +25,24 @@ RSpec.describe Medicine::Dependency do
     end
   end
 
+  describe '#required?' do
+    context 'when has default' do
+      let(:dependency) { subject.new('foo', default: TOKEN) }
+
+      it 'returns false' do
+        expect(dependency.required?).to be_falsey
+      end
+    end
+
+    context 'when has no default' do
+      let(:dependency) { subject.new('foo') }
+
+      it 'returns true' do
+        expect(dependency.required?).to be_truthy
+      end
+    end
+  end
+
   describe '#default' do
     Foo  = Class.new
     Foos = Class.new

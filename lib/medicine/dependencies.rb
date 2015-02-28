@@ -2,6 +2,7 @@ require "inflecto"
 require "medicine/dependency"
 
 module Medicine
+  UnknownDependency = Class.new(StandardError)
 
   # @api private
 
@@ -26,6 +27,18 @@ module Medicine
 
     def size
       all.size
+    end
+
+    def [](name)
+      find { |dependency| dependency.name == name }
+    end
+
+    def fetch(name)
+      self[name] || raise(UnknownDependency, "Dependency #{name} is unknown")
+    end
+
+    def include?(name)
+      !!self[name]
     end
 
     def <<(dependency)

@@ -22,6 +22,10 @@ module Medicine
       !!@default
     end
 
+    def required?
+      !@default
+    end
+
     private
 
     def typecast(dependency)

@@ -13,6 +13,10 @@ module Medicine
       raise ArgumentError, "No dependency with name #{name} has been injected."
     end
 
+    def [](name, &block)
+      get(name, &block)
+    end
+
     def set(name, dependency)
       @injections[name] = dependency
     end

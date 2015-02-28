@@ -39,6 +39,12 @@ RSpec.describe Medicine::Injections do
     end
   end
 
+  describe '#[]' do
+    it 'is aliased to #get' do
+      expect(subject).to receive(:get).with(:foo)
+      subject[:foo]
+    end
+  end
 
   describe '#empty?' do
     context 'when no dependencies' do
