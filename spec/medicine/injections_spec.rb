@@ -11,7 +11,11 @@ RSpec.describe Medicine::Injections do
     end
 
     context 'when dependency has already been set' do
-      pending 'it issues a warning'
+      it 'issues a warning' do
+        expect(subject).to receive(:warn)
+        subject.set(name, dependency)
+        subject.set(name, dependency)
+      end
     end
   end
 

@@ -18,6 +18,7 @@ module Medicine
     end
 
     def set(name, dependency)
+      warn "#{name} has already been injected" if include?(name)
       @injections[name] = dependency
     end
 
