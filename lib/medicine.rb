@@ -16,6 +16,7 @@ module Medicine
   end
 
   RequiredDependencyError = Class.new(::ArgumentError)
+  DependencyUnknownError  = Class.new(::StandardError)
 
   module DI
     # Injects dependencies
@@ -46,8 +47,9 @@ module Medicine
     #   register_user.inject(:user_repo, double('UserRepo'))
     #
     # @api public
-    def inject(key, dependency)
-      @injections.set(key, dependency)
+    def inject(name, dependency)
+      raise DependencyUnknownError, "#{name} has not been declared as a dependency" unless self.class.dependencies.include?(name)
+      @injections.set(name, dependency)
       self
     end
 
@@ -67,7 +69,7 @@ module Medicine
 
     def set_injections_for_args(args)
       (args.last.respond_to?(:[]) ? args.pop : {}).each do |name, dependency|
-        injections.set(name, dependency)
+        inject(name, dependency)
       end
     end
 

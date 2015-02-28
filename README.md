@@ -53,7 +53,10 @@ command = CastVote.new(votes_repo: double)
 
 In the above case `votes_repo` will return the double.
 
-### Inejcting via a setter
+If you try and inject a dependency which has not been declared an error is
+raised.
+
+### Injecting via a setter
 
 ```ruby
 command = CastVote.new
@@ -61,6 +64,9 @@ command.inject(:vote_repo, double)
 ```
 
 In the above case `votes_repo` will return the double.
+
+If you try and inject a dependency which has not been declared an error is
+raised.
 
 ### Required dependencies
 

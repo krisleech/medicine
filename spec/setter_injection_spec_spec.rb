@@ -34,8 +34,15 @@ RSpec.describe 'Medicine' do
     end
 
     it 'injects a dependency' do
+      medicated_class.class_eval { dependency :name }
       subject.inject(:name, double)
       expect(subject.injections).not_to be_empty
+    end
+
+    describe 'when dependency has not been declared' do
+      it 'raises an error' do
+        expect { subject.inject(:name, double) }.to raise_error(Medicine::DependencyUnknownError)
+      end
     end
   end
 end
