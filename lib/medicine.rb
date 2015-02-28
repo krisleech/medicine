@@ -18,13 +18,58 @@ module Medicine
   RequiredDependencyError = Class.new(::ArgumentError)
 
   module DI
-
+    # Injects dependencies
+    #
+    # @param [Array<Object>] args - the last argument must be a Hash
+    #
+    # @return [undefined]
+    #
+    # @example
+    #   register_user = RegisterUser.new(user_repo: double('UserRepo'))
+    #
+    # @api public
     def initialize(*args)
-      DefineMethods.on(self, args)
+      @injections = Injections.new
+      set_injections_for_args(args)
+      DefineMethods.on(self)
       super
     end
 
+    # Injects a dependency
+    #
+    # @param [Symbol] key
+    # @param [Object] dependency
+    #
+    # @return [self]
+    #
+    # @example
+    #   register_user.inject(:user_repo, double('UserRepo'))
+    #
+    # @api public
+    def inject(key, dependency)
+      @injections.set(key, dependency)
+      self
+    end
+
+    # Returns injections
+    #
+    # @example
+    #   register_user.injections
+    #
+    # @return [Injections]
+    #
+    # @api private
+    def injections
+      @injections.dup.freeze
+    end
+
     private
+
+    def set_injections_for_args(args)
+      (args.last.respond_to?(:[]) ? args.pop : {}).each do |name, dependency|
+        injections.set(name, dependency)
+      end
+    end
 
     def self.included(base)
       base.extend(ClassMethods)
@@ -41,7 +86,10 @@ module Medicine
 
       private
 
-      # declare a dependency
+      # Declare a dependency
+      #
+      # @param [Symbol] name
+      # @param [Hash] options
       #
       # @example
       #   class MyThing
@@ -51,6 +99,7 @@ module Medicine
       # @api public
       def dependency(name, options = {})
         dependencies.add(name, options)
+        self
       end
 
       def inherited(subclass)
