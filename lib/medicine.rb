@@ -111,7 +111,7 @@ module Medicine
         dependencies.add(name, options)
 
         define_method name do
-          @injections.get(name) do
+          @injections.fetch(name) do
             self.class.dependencies.fetch(name).default do
               raise NoInjectionError, "Dependency not injected and default not declared for #{name}"
             end

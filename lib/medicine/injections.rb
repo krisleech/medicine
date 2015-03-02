@@ -7,14 +7,14 @@ module Medicine
       @injections = {}
     end
 
-    def get(name, &block)
+    def fetch(name, &block)
       @injections.fetch(name, &block)
     rescue KeyError
       raise ArgumentError, "No dependency with name #{name} has been injected."
     end
 
-    def [](name, &block)
-      get(name, &block)
+    def [](name)
+      @injections[name]
     end
 
     def set(name, dependency)

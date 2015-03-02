@@ -7,7 +7,7 @@ RSpec.describe Medicine::Injections do
   describe '#set' do
     it 'sets a dependency for name' do
       subject.set(name, dependency)
-      expect(subject.get(name)).to eq dependency
+      expect(subject.fetch(name)).to eq dependency
     end
 
     context 'when dependency has already been set' do
@@ -19,34 +19,42 @@ RSpec.describe Medicine::Injections do
     end
   end
 
-  describe '#get' do
+  describe '#fetch' do
     context 'given a known name' do
       it 'gets a dependency by name' do
         subject.set(name, dependency)
-        expect(subject.get(name)).to eq dependency
+        expect(subject.fetch(name)).to eq dependency
       end
     end
 
     context 'given an unknown name' do
       context 'and no block given' do
         it 'raise an error' do
-          expect { subject.get(:made_up_name) }.to raise_error(ArgumentError)
+          expect { subject.fetch(:made_up_name) }.to raise_error(ArgumentError)
         end
       end
 
       context 'and block given' do
         # FIXME: assert block is called
         it 'does not raise an error' do
-          expect { subject.get(:made_up_name) {  } }.not_to raise_error
+          expect { subject.fetch(:made_up_name) {  } }.not_to raise_error
         end
       end
     end
   end
 
   describe '#[]' do
-    it 'is aliased to #get' do
-      expect(subject).to receive(:get).with(:foo)
-      subject[:foo]
+    context 'given a known name' do
+      it 'returns dependency' do
+        subject.set(name, dependency)
+        expect(subject[name]).to eq dependency
+      end
+    end
+
+    context 'given an unknown name' do
+      it 'returns nil' do
+        expect(subject[name]).to eq nil
+      end
     end
   end
 
