@@ -1,12 +1,13 @@
 module Medicine
   NoDefaultError = Class.new(StandardError)
+  NoDefault      = Class.new.freeze
 
   class Dependency
     attr_reader :name
 
     def initialize(name, options = {})
       @name    = name
-      @default = options[:default]
+      @default = options.fetch(:default, NoDefault)
     end
 
     def method_name
@@ -29,11 +30,11 @@ module Medicine
     end
 
     def default?
-      !!@default
+      !required?
     end
 
     def required?
-      !@default
+      @default == NoDefault
     end
 
     private

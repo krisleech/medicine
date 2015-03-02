@@ -26,8 +26,16 @@ RSpec.describe Medicine::Dependency do
   end
 
   describe '#required?' do
-    context 'when has default' do
+    context 'when has non-nil default' do
       let(:dependency) { subject.new('foo', default: TOKEN) }
+
+      it 'returns false' do
+        expect(dependency.required?).to be_falsey
+      end
+    end
+
+    context 'when has nil default' do
+      let(:dependency) { subject.new('foo', default: nil) }
 
       it 'returns false' do
         expect(dependency.required?).to be_falsey
@@ -65,6 +73,14 @@ RSpec.describe Medicine::Dependency do
 
       Foo  = Class.new
       Foos = Class.new
+
+      describe 'when initalized with nil' do
+        let(:default) { nil }
+
+        it 'returns a class' do
+          expect(dependency.default).to eq nil
+        end
+      end
 
       describe 'when initalized with a class' do
         let(:default) { Foo }
