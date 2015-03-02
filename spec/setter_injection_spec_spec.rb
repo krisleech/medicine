@@ -45,4 +45,16 @@ RSpec.describe 'Medicine' do
       end
     end
   end
+
+  describe '#injects' do
+    it 'is a public method' do
+      expect(subject).to respond_to :injects
+    end
+
+    it 'invokes inject for each dependency' do
+      medicated_class.class_eval { dependency :name }
+      expect(subject).to receive(:inject).twice
+      subject.injects(name: double, other: double)
+    end
+  end
 end

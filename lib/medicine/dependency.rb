@@ -13,9 +13,19 @@ module Medicine
       name
     end
 
+    # returns the default, yields block or raises an error
+    #
+    # FIXME: move block yielding to default_or method.
     def default
-      raise NoDefaultError unless default?
-      typecast(@default)
+      if default?
+        typecast(@default)
+      else
+        if block_given?
+          yield
+        else
+          raise NoDefaultError, "No default declared for #{name}"
+        end
+      end
     end
 
     def default?

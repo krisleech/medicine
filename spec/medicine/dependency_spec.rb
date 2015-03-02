@@ -44,66 +44,83 @@ RSpec.describe Medicine::Dependency do
   end
 
   describe '#default' do
-    Foo  = Class.new
-    Foos = Class.new
+    context 'when no default given' do
+      let(:dependency) { subject.new('foo') }
 
-    let(:dependency) { subject.new('foo', default: default) }
+      context 'when block given' do
+        it 'yields the block' do
+          expect { |b| dependency.default(&b) }.to yield_with_no_args
+        end
+      end
 
-    describe 'when initalized with a class' do
-      let(:default) { Foo }
-
-      it 'returns a class' do
-        expect(dependency.default).to eq Foo
+      context 'when no block given' do
+        it 'raise an error' do
+          expect { dependency.default }.to raise_error(Medicine::NoDefaultError)
+        end
       end
     end
 
-    describe 'when initialized with a lambda' do
-      let(:default) { -> { Foo } }
+    context 'when default given' do
+      let(:dependency) { subject.new('foo', default: default) }
 
-      it 'returns a class' do
-        expect(dependency.default).to eq Foo
+      Foo  = Class.new
+      Foos = Class.new
+
+      describe 'when initalized with a class' do
+        let(:default) { Foo }
+
+        it 'returns a class' do
+          expect(dependency.default).to eq Foo
+        end
       end
-    end
 
-    describe 'when initialized with a Proc' do
-      let(:default) { Proc.new { Foo } }
+      describe 'when initialized with a lambda' do
+        let(:default) { -> { Foo } }
 
-      it 'returns a class' do
-        expect(dependency.default).to eq Foo
+        it 'returns a class' do
+          expect(dependency.default).to eq Foo
+        end
       end
-    end
 
-    describe 'when initialized with a CamelCase String' do
-      let(:default) { 'Foo' }
+      describe 'when initialized with a Proc' do
+        let(:default) { Proc.new { Foo } }
 
-      it 'returns a class' do
-        expect(dependency.default).to eq Foo
+        it 'returns a class' do
+          expect(dependency.default).to eq Foo
+        end
       end
-    end
 
-    describe 'when initialized with a plural CamelCase String' do
-      let(:default) { 'Foos' }
+      describe 'when initialized with a CamelCase String' do
+        let(:default) { 'Foo' }
 
-      it 'returns a class' do
-        expect(dependency.default).to eq Foos
+        it 'returns a class' do
+          expect(dependency.default).to eq Foo
+        end
       end
-    end
 
-    describe 'when initialized with a CamelCase Symbol' do
-      let(:default) { :Foo }
+      describe 'when initialized with a plural CamelCase String' do
+        let(:default) { 'Foos' }
 
-      it 'returns a class' do
-        expect(dependency.default).to eq Foo
+        it 'returns a class' do
+          expect(dependency.default).to eq Foos
+        end
       end
-    end
 
-    describe 'when initialized with a lowercase Symbol' do
-      let(:default) { :foo }
+      describe 'when initialized with a CamelCase Symbol' do
+        let(:default) { :Foo }
 
-      it 'returns a class' do
-        expect(dependency.default).to eq Foo
+        it 'returns a class' do
+          expect(dependency.default).to eq Foo
+        end
+      end
+
+      describe 'when initialized with a lowercase Symbol' do
+        let(:default) { :foo }
+
+        it 'returns a class' do
+          expect(dependency.default).to eq Foo
+        end
       end
     end
   end
 end
-

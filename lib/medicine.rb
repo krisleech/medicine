@@ -1,6 +1,6 @@
 require "medicine/version"
 require "medicine/dependencies"
-require "medicine/define_methods"
+require "medicine/injections"
 
 module Medicine
   # returns the {Medicine::DI} module
@@ -17,6 +17,7 @@ module Medicine
 
   RequiredDependencyError = Class.new(::ArgumentError)
   DependencyUnknownError  = Class.new(::StandardError)
+  NoInjectionError        = Class.new(::StandardError)
 
   module DI
     # Injects dependencies
@@ -29,11 +30,10 @@ module Medicine
     #   register_user = RegisterUser.new(user_repo: double('UserRepo'))
     #
     # @api public
-    def initialize(*args)
+    def initialize(injections = {})
       @injections = Injections.new
-      set_injections_for_args(args)
-      DefineMethods.on(self)
-      super
+      injects(injections)
+      super()
     end
 
     # Injects a dependency
@@ -53,6 +53,20 @@ module Medicine
       self
     end
 
+    # Injects dependencies
+    #
+    # @params [Hash] injections
+    #
+    # @return [self]
+    #
+    # @example
+    #   register_user.injects(user_repo: double, user_mailer: double)
+    #
+    # @api public
+    def injects(injections)
+      injections.each { |name, dependency| inject(name, dependency) }
+    end
+
     # Returns injections
     #
     # @example
@@ -66,12 +80,6 @@ module Medicine
     end
 
     private
-
-    def set_injections_for_args(args)
-      (args.last.respond_to?(:[]) ? args.pop : {}).each do |name, dependency|
-        inject(name, dependency)
-      end
-    end
 
     def self.included(base)
       base.extend(ClassMethods)
@@ -101,6 +109,17 @@ module Medicine
       # @api public
       def dependency(name, options = {})
         dependencies.add(name, options)
+
+        define_method name do
+          @injections.get(name) do
+            self.class.dependencies.fetch(name).default do
+              raise NoInjectionError, "Dependency not injected and default not declared for #{name}"
+            end
+          end
+        end
+
+        private name
+
         self
       end
 
