@@ -4,6 +4,8 @@
 [![Code Climate](https://codeclimate.com/github/krisleech/medicine.png)](https://codeclimate.com/github/krisleech/medicine)
 [![Build Status](https://travis-ci.org/krisleech/medicine.png?branch=master)](https://travis-ci.org/krisleech/medicine)
 [![Coverage Status](https://coveralls.io/repos/krisleech/medicine/badge.png?branch=master)](https://coveralls.io/r/krisleech/medicine?branch=master)
+[![Inch Pages](http://inch-ci.org/github/krisleech/medicine.png)](http://inch-ci.org/github/krisleech/medicine)
+
 
 Simple Dependency Injection for Ruby
 

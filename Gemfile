@@ -12,4 +12,5 @@ group :extras do
   gem 'pry-byebug'
   gem 'yard'
   gem 'redcarpet' # yard
+  gem 'inch'
 end
