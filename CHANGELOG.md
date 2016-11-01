@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* rename `inject` to `inject_dependency` to avoid clash with collection-like
+  objects which might have an `inject` method already. [breaking change]
+
 ## 0.0.2 (13th Feb 2015)
 
 * refactoring

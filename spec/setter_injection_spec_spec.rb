@@ -28,20 +28,20 @@ RSpec.describe 'Medicine' do
     end
   end
 
-  describe '#inject' do
+  describe '#inject_dependency' do
     it 'is a public method' do
-      expect(subject).to respond_to :inject
+      expect(subject).to respond_to :inject_dependency
     end
 
     it 'injects a dependency' do
       medicated_class.class_eval { dependency :name }
-      subject.inject(:name, double)
+      subject.inject_dependency(:name, double)
       expect(subject.injections).not_to be_empty
     end
 
     describe 'when dependency has not been declared' do
       it 'raises an error' do
-        expect { subject.inject(:name, double) }.to raise_error(Medicine::DependencyUnknownError)
+        expect { subject.inject_dependency(:name, double) }.to raise_error(Medicine::DependencyUnknownError)
       end
     end
   end
@@ -53,7 +53,7 @@ RSpec.describe 'Medicine' do
 
     it 'invokes inject for each dependency' do
       medicated_class.class_eval { dependency :name }
-      expect(subject).to receive(:inject).twice
+      expect(subject).to receive(:inject_dependency).twice
       subject.injects(name: double, other: double)
     end
   end

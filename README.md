@@ -6,7 +6,6 @@
 [![Coverage Status](https://coveralls.io/repos/krisleech/medicine/badge.png?branch=master)](https://coveralls.io/r/krisleech/medicine?branch=master)
 [![Inch Pages](http://inch-ci.org/github/krisleech/medicine.png)](http://inch-ci.org/github/krisleech/medicine)
 
-
 Simple Dependency Injection for Ruby
 
 Find yourself injecting dependencies via the initalizer or a setter method?
@@ -62,7 +61,7 @@ raised.
 
 ```ruby
 command = CastVote.new
-command.inject(:vote_repo, double)
+command.inject_depdendency(:vote_repo, double)
 ```
 
 In the above case `votes_repo` will return the double.

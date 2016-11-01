@@ -44,10 +44,10 @@ module Medicine
     # @return [self]
     #
     # @example
-    #   register_user.inject(:user_repo, double('UserRepo'))
+    #   register_user.inject_dependency(:user_repo, double('UserRepo'))
     #
     # @api public
-    def inject(name, dependency)
+    def inject_dependency(name, dependency)
       raise DependencyUnknownError, "#{name} has not been declared as a dependency" unless self.class.dependencies.include?(name)
       @injections.set(name, dependency)
       self
@@ -64,7 +64,7 @@ module Medicine
     #
     # @api public
     def injects(injections)
-      injections.each { |name, dependency| inject(name, dependency) }
+      injections.each { |name, dependency| inject_dependency(name, dependency) }
     end
 
     # Returns injections
